@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "com.lwest/com.lwest.Client",
+            "projectName": "email-client"
+        },
+        {
+            "type": "java",
+            "name": "Server Client",
+            "request": "launch",
+            "mainClass": "com.lwest/com.lwest.ServerClient",
+            "projectName": "email-server"
+        },
+        {
+            "type": "java",
+            "name": "Client",
+            "request": "launch",
+            "mainClass": "com.lwest/com.lwest.App",
+            "projectName": "email-client"
+        }
+    ]
+}

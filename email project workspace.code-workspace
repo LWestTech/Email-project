@@ -1,0 +1,37 @@
+{
+	"folders": [
+		{
+			"path": "email-client"
+		},
+		{
+			"name": "email-server",
+			"path": "email-server"
+		}
+	],
+	"settings": {},
+	"launch": {
+		"version": "0.2.0",
+		"configurations": [
+			{
+				"type": "java",
+				"name": "Server Client",
+				"request": "launch",
+				"mainClass": "com.lwest/com.lwest.ServerClient",
+				"projectName": "email-server"
+			},
+			{
+				"type": "java",
+				"name": "Client",
+				"request": "launch",
+				"mainClass": "com.lwest/com.lwest.App",
+				"projectName": "email-client"
+			}
+		],
+		"compounds": [
+			{
+				"name": "Compound",
+				"configurations": ["Server Client", "Client"]
+			}
+		]
+	}
+}
