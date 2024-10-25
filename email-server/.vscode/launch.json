@@ -4,19 +4,25 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-        
+        {
+            "type": "java",
+            "name": "ServerApp",
+            "request": "launch",
+            "mainClass": "com.lwest/com.lwest.ServerApp",
+            "projectName": "email-server"
+        },
+        {
+            "type": "java",
+            "name": "ConnectionStateTest",
+            "request": "launch",
+            "mainClass": "com.lwest/com.lwest.ConnectionStateTest",
+            "projectName": "email-server"
+        },
         {
             "type": "java",
             "name": "Current File",
             "request": "launch",
             "mainClass": "${file}"
-        },
-        {
-            "type": "java",
-            "name": "ServerClient",
-            "request": "launch",
-            "mainClass": "com.lwest/com.lwest.ServerClient",
-            "projectName": "email-server"
         }
     ]
 }

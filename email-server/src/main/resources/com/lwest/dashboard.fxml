@@ -50,9 +50,9 @@
             </HBox>
             <HBox alignment="CENTER" spacing="10.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#start" text="Start Server" />
-                  <Button mnemonicParsing="false" onAction="#pause" text="Pause Server" />
-                  <Button mnemonicParsing="false" onAction="#stop" text="Stop Server" />
+                  <Button fx:id="startButton" mnemonicParsing="false" onAction="#start" text="Start Server" />
+                  <!-- <Button mnemonicParsing="false" onAction="#pause" text="Pause Server" /> -->
+                  <Button fx:id="stopButton" mnemonicParsing="false" onAction="#stop" text="Stop Server" />
                </children>
             </HBox>
          </children>

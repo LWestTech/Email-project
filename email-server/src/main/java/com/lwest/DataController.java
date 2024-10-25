@@ -7,6 +7,6 @@ public class DataController {
 
     @FXML
     private void switchToDashboard() throws IOException {
-        ServerClient.setRoot("dashboard");
+        ServerApp.setRoot("dashboard");
     }
 }

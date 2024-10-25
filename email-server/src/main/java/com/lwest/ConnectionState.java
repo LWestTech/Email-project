@@ -1,54 +1,80 @@
 package com.lwest;
 
+import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.function.Consumer;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.util.Duration;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 
-public class ConnectionState {
+/**
+ * Wrapper class for the state of connection to maintain timers for each state
+ */
+public class ConnectionState extends SimpleObjectProperty<State>{
     private State state;
-    private long connectingTime;
-    private long onlineTime;
-    private Thread timerThread;
+    private ObjectProperty<Long> connectingTime;
+    private ObjectProperty<Long> onlineTime;
+    private ZonedDateTime offlineTime;
+    private Timeline counter;
 
-    public ConnectionState() {this.state = State.OFFLINE;}
-    
-    public void connecting() {
-        state = State.CONNECTING;
-        timerThread = new Thread(new TimerThread(this::setConnectingTime));
-        timerThread.start();
+    /**
+     * Constructs a connection state
+     * @param displayedTime property to bind a counter display to
+     */
+    public ConnectionState() {
+        this.connectingTime = new SimpleObjectProperty<>(0L);
+        this.onlineTime = new SimpleObjectProperty<>(0L);
+        super.set(State.OFFLINE);
+        offline();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Object getBean() {
+        return state;
+    }
+    
+    public void connecting() {
+        System.out.println("CONNECTING");
+        super.set(State.CONNECTING);
+        startCounter(connectingTime);
+    }
+    
     public void online() {
-        state = State.ONLINE;
+        System.out.println("ONLINE");
+        super.set(State.ONLINE);
+        startCounter(onlineTime);
     }
     
     public void offline() {
-        state = State.OFFLINE;
+        System.out.println("OFFLINE");
+        super.set(State.OFFLINE);
+        stopCounter();
+        offlineTime = ZonedDateTime.now();
     }
 
-    private void setConnectingTime(long t) {connectingTime = t;}
-    private void setOnlineTime(long t) {onlineTime = t;}
-
-    public enum State {
-        CONNECTING,
-        ONLINE,
-        OFFLINE;
+    public State getState() {return state;}
+    public ObjectProperty<Long> getConnectingTime() {return connectingTime;}
+    public ObjectProperty<Long> getOnlineTime() {return onlineTime;}
+    public ZonedDateTime getOfflineTime() {return offlineTime;}
+    
+    private void startCounter(ObjectProperty<Long> time) {
+        final long anchorTime = System.currentTimeMillis();
+        // Create automatically running script
+        time.set((long)0);
+        counter = new Timeline(new KeyFrame(Duration.seconds(1), event -> {
+            time.set(System.currentTimeMillis() - anchorTime); // That sets the time to the time since the anchorTime
+        }));
+        counter.setCycleCount(Timeline.INDEFINITE);
+        counter.play();
     }
-    private class TimerThread implements Runnable {
-        private long anchorTime;
-        private java.util.function.Consumer<Long> setTime;
-        private TimerThread(java.util.function.Consumer<Long> setTime) {
-        private TimerThread(Runnable setTime) {
-            this.setTime = setTime;
-            anchorTime = System.currentTimeMillis();
-        }
-        @Override
-        public void run() {
-            try {
-                Thread.sleep(1000 / 3);
-                connectingTime = System.currentTimeMillis() - anchorTime;
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
 
+    private void stopCounter() {
+        if (counter != null) counter.stop();
+        counter = null;
     }
 }

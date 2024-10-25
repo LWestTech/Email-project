@@ -2,51 +2,61 @@ package com.lwest;
 
 import java.io.IOException;
 
-import com.lwest.EmailServer.DebugState;
 
 import javafx.animation.Animation.Status;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 public class DashboardController {
-    EmailServer server = ServerClient.emailServer;
+    Server server = ServerApp.server;
     @FXML private Label status;
     @FXML private Label uptime;
+    @FXML private Button stopButton;
+    @FXML private Button startButton;
     
     @FXML
     private void switchToData() throws IOException {
-        ServerClient.setRoot("data");
+        ServerApp.setRoot("data");
     }
     
 
     @FXML
     public void initialize() {
-        server.uptimeProperty().addListener((observable, oldValue, newValue) -> {
-            uptime.setText(formatUptime(newValue));
+        stopButton.setDisable(true);
+        server.getConnectionState().addListener((observable, oldValue, newValue) -> {
+            // System.out.println("skfjslk " + newValue);
         });
+        server.getConnectionState().getConnectingTime().addListener((observable, oldValue, newValue) -> {
+            status.textProperty().bind(server.getConnectionState().asString());
+        });
+        // server.uptimeProperty().addListener((observable, oldValue, newValue) -> {
+        //     uptime.setText(formatUptime(newValue));
+        // });
 
-        // Bind the Text's textProperty to the currentStatus's value
-        status.textProperty().bind(server.debugStateProperty().asString());
-        server.debugStateProperty().addListener((observable, oldValue, newValue) -> {
-            uptime.textFillProperty().set(debugStateColor(observable.getValue()));
-        });
+        // // Bind the Text's textProperty to the currentStatus's value
+        // status.textProperty().bind(server.debugStateProperty().asString());
+        // server.debugStateProperty().addListener((observable, oldValue, newValue) -> {
+        //     uptime.textFillProperty().set(debugStateColor(observable.getValue()));
+        // });
     }
 
-    private Color debugStateColor(DebugState state) {
-        switch(state) {
-            case CONNECTING:
-                return Color.rgb(118, 63, 63);
-            case CONNECTED:
-                return Color.RED;
-            case PAUSED:
-                return Color.rgb(183, 162, 0);
-            default:
-                return Color.BLACK;
-        }
+    private Color debugStateColor(ConnectionState state) {
+        // switch(state) {
+        //     case CONNECTING:
+        //         return Color.rgb(118, 63, 63);
+        //     case CONNECTED:
+        //         return Color.RED;
+        //     case PAUSED:
+        //         return Color.rgb(183, 162, 0);
+        //     default:
+        //         return Color.BLACK;
+        // }
+        return Color.BLACK;
     }
     
     private String formatUptime(long uptime) {
@@ -60,14 +70,19 @@ public class DashboardController {
 
     @FXML
     private void start() throws IOException {
+        uptime.setText("00:00:00");
+        startButton.setDisable(true);
+        stopButton.setDisable(false);
         server.start(12345);
     }
     @FXML
     private void stop() throws IOException {
+        stopButton.setDisable(true);
+        startButton.setDisable(false);
         server.stop();
     }
-    @FXML
-    private void pause() throws IOException {
-        server.pause();
-    }
+    // @FXML
+    // private void pause() throws IOException {
+    //     server.pause();
+    // }
 }
